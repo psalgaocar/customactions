@@ -5,6 +5,10 @@ inputs: # this is an input to the custom action
     description: Whether we want to cache or not
     required: false
     default: 'true'
+outputs:
+  used-cache:
+    description: 'The cache was used in the flow'
+    value: ${{steps.install-dependencies.outputs.cache}}
 runs:
   # this is a composite action and not a docker or js action 
   using: composite 
@@ -17,7 +21,10 @@ runs:
         path: node_modules
         key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
     - name: Install dependencies
+      id: install-dependencies
       # if the cache-hit does not happen or we do not want to cache then install dependencies
       if: steps.cache.outputs.cache-hit != 'true' || inputs.caching != 'true'
-      run: npm ci
+      run: |
+        npm ci
+        echo ":: set-output name=cache:: ${{inputs.caching}}"
       shell: bash # you have to provide the shell where you want to execute the run
