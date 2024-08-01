@@ -10,7 +10,7 @@ jobs:
       - name: Get code
         uses: actions/checkout@v3
       - name: Load the custom Cache action
-        uses: .\\.github\\actions\\cachedeps
+        uses: ./.github/actions/cachedeps
       - name: Lint code
         run: npm run lint
   test:
